@@ -1201,18 +1201,22 @@ class QG3:
 
     # t is the index of the time axis
     # k is the wavenumber
+    # evector[:,i] is the eigenvector corresponding to the eigenvalue evalues[i]
     def Psi_modes(self,z,t,ik,k,n):
         if self.evectors is None:
             print("Compute modes first!")
             return
 
         if len(self.evectors.shape)==4: # 1D wavenumber axis
-            evector = self.evectors[t,ik,n,:]
+            evector = self.evectors[t,ik,:,n]
         elif len(self.evectors.shape)==5: # 2D wavenumber axis
-            evector = self.evectors[t,ik,0,n,:]
-            
-        return np.asarray([evector[n]*self.Psi(z,t,k,i) for i in range(self.nz)]).sum()
+            evector = self.evectors[t,ik,0,:,n]
         
+        inv_e = np.linalg.inv(self.e[t,ik])
+        phi = inv_e@evector
+    
+        return np.asarray([phi[i]*self.Psi(z,t,k,i) for i in range(self.nz)]).sum()
+
     
     ###################################################################
     ### Plotting ######################################################
