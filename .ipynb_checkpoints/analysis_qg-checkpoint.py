@@ -303,6 +303,21 @@ def get_vabs(field,t=-1):
     """
     return np.max(np.abs(field[t]))
 
+def correct_sign(array,atol=1e-8):
+    # Check if the first element is close to zero
+    if not np.isclose(array[0], 0,atol=atol):
+        # Check if the first element is negative
+        if array[0] < 0:
+            # Multiply the array by a negative number
+            array *= -1
+    else:
+        # Check if the last element is negative
+        if array[-1] < 0:
+            # Multiply the array by a negative number
+            array *= -1
+    
+    return array
+
 class QG3:
     def __init__(self, H=None, U=None, case_dir=None,data=None):
         """
@@ -1556,3 +1571,40 @@ class QG3:
         ax.set_title(title)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
+
+    def plot_mode_grid(self,Ls,K=None, figsize=(15,3.5),lw=2,xlim=[-1.05,1.05],
+                       Nz=300):
+        if K is None:
+            K = self.k1[:,0]
+    
+        Z = np.linspace(0,-self.H(0).sum(),Nz)
+        
+        Psi_mode = np.zeros((self.nz,len(Ls),Nz))
+        ks = np.zeros_like(Ls)
+        for i in range(self.nz):
+            for j in range(len(Ls)):
+                L = Ls[j]
+                k = (2*np.pi)/L
+                ik = np.argmin(np.abs(K-k)) # find the index closest of ik
+                ks[j] = K[ik]
+                Psi_mode[i,j,:] = correct_sign(np.asarray([self.Psi_modes(z,0,ik,k,i) for z in Z]))
+
+        n_plots = 1
+        m_plots = len(Ls)  # Number of columns
+    
+        fig, axs = plt.subplots(n_plots, m_plots, figsize=figsize)  # Adjust the figsize as needed
+        for j in range(m_plots):
+            ax = axs[j]
+            
+            ax.plot(Psi_mode[1,j,:],Z,c='tab:red',lw=lw)
+            ax.plot(Psi_mode[2,j,:],Z,c='tab:purple',lw=lw)
+            ax.plot(Psi_mode[0,j,:],Z,c='tab:blue',lw=lw)
+            
+            ax.set_xlim(xlim)
+            ax.set_ylim([-self.H(0).sum(), 0])
+            ax.axvline(x=0.0, lw=0.5, c='k')
+            ax.set_title("L = {:.0f} km".format(2*np.pi/ks[j]/1e3))
+        
+        
+        plt.tight_layout()  # Adjust spacing between subplots
+        plt.show()
