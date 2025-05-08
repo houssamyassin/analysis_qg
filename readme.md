@@ -4,14 +4,14 @@ A Python toolkit for analyzing output from simulations using a novel multi-surfa
 
 Key features
 
-- Potential vorticity / streamfunction inversion: Inverts potential vorticity fields into streamfunctions using spectral methods
+- *Potential Vorticity — Streamfunction Inversion*: Inverts potential vorticity fields into streamfunctions using spectral methods.
 
-- Recovers full three-dimensional vertical structure from potential vorticity distribution on each surface
+- *3D Vertical Structure Recovery*: Recovers the full three-dimensional vertical structure from potential vorticity distribution on each surface.
 
-- Compute energy budgets in spectral space for the multi-layer system
+- *Spectral Energy Budget Analysis:* Computes energy budgets in spectral space for the multi-surface system.
 
-- Analyze eigenvalues, phase speeds, and growth rates of normal modes for linear problem
+- *Normal Mode Diagnostics:* Analyzes eigenvalues, phase speeds, and growth rates of normal modes for the linear problem.
 
-- Includes visualization tools to plot layer.
+- *Visualization Tools:* Provides tools to plot fields on layers visualize isotropic energy spectra and inversion functions on log-log plots.
 
-- Helper routines for Fourier transforms and modal decompositions
+- *Fourier and Modal Utilities:* Provides helper routines for Fourier transforms and vertical modal decompositions.
